@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seed Database</title>
+</head>
+<body>
+    <h1>Seed Careers Database</h1>
+    <button id="seedBtn" onclick="seedDatabase()">Seed Database</button>
+    <pre id="output"></pre>
+    
+    <script>
+        async function seedDatabase() {
+            const btn = document.getElementById('seedBtn');
+            const output = document.getElementById('output');
+            btn.disabled = true;
+            output.innerHTML = 'Seeding...';
+            
+            try {
+                const response = await fetch('/api/seed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                output.innerHTML = JSON.stringify(data, null, 2);
+            } catch (error) {
+                output.innerHTML = 'Error: ' + error.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

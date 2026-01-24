@@ -8,6 +8,7 @@ interface CareerModalProps {
   whatTheyDo: string;
   skillsNeeded: string[];
   certifications: string[];
+  tertiaryInstitutions: string[];
   onClose: () => void;
 }
 
@@ -19,6 +20,7 @@ export default function CareerModal({
   whatTheyDo,
   skillsNeeded,
   certifications,
+  tertiaryInstitutions,
   onClose,
 }: CareerModalProps) {
   return (
@@ -51,29 +53,27 @@ export default function CareerModal({
             {name}
           </h2>
 
-          {/* Description */}
-          <p className="text-slate-300 text-lg">{description}</p>
-
-          {/* What It Is */}
+          {/* About This Career */}
           <div>
-            <h3 className="text-blue-400 font-semibold text-lg mb-2">What It Is</h3>
-            <p className="text-slate-300">{whatItIs}</p>
-          </div>
-
-          {/* What They Do */}
-          <div>
-            <h3 className="text-cyan-400 font-semibold text-lg mb-2">What They Do</h3>
-            <p className="text-slate-300">{whatTheyDo}</p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-blue-400 text-2xl">📋</span>
+              <h3 className="text-slate-200 font-semibold text-lg">About This Career</h3>
+            </div>
+            <p className="text-slate-300 leading-relaxed">{whatItIs}</p>
+            <p className="text-slate-300 leading-relaxed mt-2">{whatTheyDo}</p>
           </div>
 
           {/* Skills Needed */}
           <div>
-            <h3 className="text-blue-400 font-semibold text-lg mb-3">Skills Needed</h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-cyan-400 text-2xl">🎓</span>
+              <h3 className="text-slate-200 font-semibold text-lg">Skills Required</h3>
+            </div>
+            <div className="flex flex-wrap gap-3">
               {skillsNeeded.map((skill, index) => (
                 <span
                   key={index}
-                  className="bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-medium"
+                  className="bg-blue-500/20 border border-blue-400/50 text-blue-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500/30 transition-colors"
                 >
                   {skill}
                 </span>
@@ -81,18 +81,43 @@ export default function CareerModal({
             </div>
           </div>
 
-          {/* Certifications */}
+          {/* South African Universities */}
+          {tertiaryInstitutions && tertiaryInstitutions.length > 0 && (
           <div>
-            <h3 className="text-cyan-400 font-semibold text-lg mb-3">Certifications</h3>
-            <ul className="space-y-2">
-              {certifications.map((cert, index) => (
-                <li key={index} className="text-slate-300 flex items-start">
-                  <span className="text-cyan-400 mr-3 mt-1">•</span>
-                  {cert}
-                </li>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-red-400 text-2xl">📍</span>
+              <h3 className="text-slate-200 font-semibold text-lg">South African Universities</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {tertiaryInstitutions.map((institution, index) => (
+                <div
+                  key={index}
+                  className="bg-teal-500/10 border border-teal-400/30 rounded-lg p-4 text-teal-200 text-sm hover:bg-teal-500/20 transition-colors"
+                >
+                  {institution}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
+          )}
+
+          {/* Certifications */}
+          {certifications.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-cyan-400 text-2xl">✓</span>
+                <h3 className="text-slate-200 font-semibold text-lg">Certifications</h3>
+              </div>
+              <ul className="space-y-2">
+                {certifications.map((cert, index) => (
+                  <li key={index} className="text-slate-300 flex items-start">
+                    <span className="text-cyan-400 mr-3 mt-1">•</span>
+                    {cert}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Close Button */}
           <button

@@ -1,70 +1,55 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Carousel from './components/Carousel';
 import CareerCard from './components/CareerCard';
 import CareerModal from './components/CareerModal';
 
+interface Career {
+  id: number;
+  name: string;
+  industry: string;
+  description: string;
+  whatItIs: string;
+  whatTheyDo: string;
+  skillsNeeded: string[];
+  certifications: string[];
+  tertiaryInstitutions: string[];
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function Home() {
   const [selectedCareer, setSelectedCareer] = useState<number | null>(null);
+  const [careers, setCareers] = useState<Career[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const careers = [
-    {
-      image: 'https://picsum.photos/400/300?random=10',
-      name: 'Aeronautical Engineer',
-      description: 'Design and develop aircraft and aerospace systems',
-      whatItIs: 'Aeronautical engineering is the field dedicated to designing, developing, and maintaining aircraft and spacecraft.',
-      whatTheyDo: 'Aeronautical engineers design aircraft structures, propulsion systems, and aerodynamic components while testing and optimizing performance.',
-      skillsNeeded: ['Physics', 'CAD Software', 'Mathematics', 'Problem Solving', 'Team Collaboration'],
-      certifications: ['Certified Flight Test Engineer (CFTE)', 'Professional Engineer (PE)', 'Certified Aeronautical Engineer (CAE)'],
-    },
-    {
-      image: 'https://picsum.photos/400/300?random=11',
-      name: 'Software Developer',
-      description: 'Build and maintain software applications',
-      whatItIs: 'Software development is the process of designing, coding, testing, and maintaining software applications and systems.',
-      whatTheyDo: 'Developers write code, debug applications, collaborate with teams, and implement new features and improvements.',
-      skillsNeeded: ['Programming Languages', 'Problem Solving', 'Version Control', 'Database Design', 'API Integration'],
-      certifications: ['AWS Certified Developer', 'Microsoft Azure Developer', 'Certified Associate Cloud Engineer'],
-    },
-    {
-      image: 'https://picsum.photos/400/300?random=12',
-      name: 'Data Scientist',
-      description: 'Analyze data to drive business decisions',
-      whatItIs: 'Data science combines statistics, programming, and domain expertise to extract insights from data.',
-      whatTheyDo: 'Data scientists collect, process, and analyze data to identify patterns and create predictive models.',
-      skillsNeeded: ['Python/R', 'Statistics', 'Machine Learning', 'SQL', 'Data Visualization'],
-      certifications: ['Google Data Analytics Certificate', 'IBM Data Science Professional', 'Microsoft Data Scientist'],
-    },
-    {
-      image: 'https://picsum.photos/400/300?random=13',
-      name: 'Product Manager',
-      description: 'Lead product strategy and development',
-      whatItIs: 'Product management involves guiding a product through its entire lifecycle from conception to launch and beyond.',
-      whatTheyDo: 'PMs define product vision, prioritize features, manage stakeholders, and ensure successful product launches.',
-      skillsNeeded: ['Strategic Thinking', 'Communication', 'Analytics', 'User Research', 'Leadership'],
-      certifications: ['Certified Product Manager (CPM)', 'Pragmatic Marketing Certificate', 'AIPMM Certification'],
-    },
-    {
-      image: 'https://picsum.photos/400/300?random=14',
-      name: 'UX Designer',
-      description: 'Create intuitive and beautiful user experiences',
-      whatItIs: 'UX design focuses on creating products that provide meaningful and relevant experiences to users.',
-      whatTheyDo: 'UX designers research user needs, create wireframes, prototypes, and iterate based on user feedback.',
-      skillsNeeded: ['Figma/Sketch', 'User Research', 'Wireframing', 'Prototyping', 'Communication'],
-      certifications: ['Google UX Design Certificate', 'Adobe XD Certification', 'Nielsen Norman UX Certification'],
-    },
-    {
-      image: 'https://picsum.photos/400/300?random=15',
-      name: 'Cybersecurity Analyst',
-      description: 'Protect systems from cyber threats',
-      whatItIs: 'Cybersecurity involves protecting computer networks and systems from digital attacks and unauthorized access.',
-      whatTheyDo: 'Analysts monitor networks, identify vulnerabilities, implement security measures, and respond to incidents.',
-      skillsNeeded: ['Network Security', 'Ethical Hacking', 'Threat Analysis', 'Incident Response', 'Linux/Windows'],
-      certifications: ['Certified Ethical Hacker (CEH)', 'CompTIA Security+', 'CISSP'],
-    },
-  ];
+  // Fetch first 6 careers from database
+  useEffect(() => {
+    const fetchCareers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/careers');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch careers');
+        }
+        
+        const data = await response.json();
+        // Shuffle and get 6 random careers
+        const shuffled = data.sort(() => Math.random() - 0.5);
+        setCareers(shuffled.slice(0, 6));
+      } catch (err) {
+        console.error('Error fetching careers:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCareers();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 scroll-smooth">
@@ -132,15 +117,16 @@ export default function Home() {
       </section>
 
       {/* Career Modal */}
-      {selectedCareer !== null && (
+      {selectedCareer !== null && careers[selectedCareer] && (
         <CareerModal
-          image={careers[selectedCareer].image}
+          image={careers[selectedCareer].image || ''}
           name={careers[selectedCareer].name}
           description={careers[selectedCareer].description}
           whatItIs={careers[selectedCareer].whatItIs}
           whatTheyDo={careers[selectedCareer].whatTheyDo}
-          skillsNeeded={careers[selectedCareer].skillsNeeded}
-          certifications={careers[selectedCareer].certifications}
+          skillsNeeded={careers[selectedCareer].skillsNeeded || []}
+          certifications={careers[selectedCareer].certifications || []}
+          tertiaryInstitutions={careers[selectedCareer].tertiaryInstitutions || []}
           onClose={() => setSelectedCareer(null)}
         />
       )}

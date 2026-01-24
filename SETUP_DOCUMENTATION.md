@@ -270,17 +270,18 @@ model VerificationToken {
 
 ```prisma
 model Career {
-  id            Int     @id @default(autoincrement())
-  name          String  @unique
-  industry      String
-  description   String
-  whatItIs      String  @db.Text
-  whatTheyDo    String  @db.Text
-  skillsNeeded  String[]
-  certifications String[]
-  image         String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                    Int     @id @default(autoincrement())
+  name                  String  @unique
+  industry              String
+  description           String
+  whatItIs              String  @db.Text
+  whatTheyDo            String  @db.Text
+  skillsNeeded          String[]
+  certifications        String[]
+  tertiaryInstitutions  String[] @default([])
+  image                 String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 ```
 
@@ -295,12 +296,14 @@ model Career {
 - `whatTheyDo` - Job responsibilities
 - `skillsNeeded` - Array of required skills
 - `certifications` - Array of certifications
+- `tertiaryInstitutions` - Array of universities/training institutions providing related courses
 - `image` - Career image URL
 - `createdAt`, `updatedAt` - Timestamps
 
 **Array Fields:**
 - `String[]` - PostgreSQL array type for multiple values
 - Stored as JSON array in database
+- `tertiaryInstitutions` example: `["University of Cape Town (UCT)", "University of the Witwatersrand (Wits)", "Stellenbosch University"]`
 
 ---
 

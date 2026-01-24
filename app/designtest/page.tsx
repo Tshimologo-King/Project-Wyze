@@ -4,10 +4,21 @@ import { useEffect, useState } from 'react';
 
 export default function DesignTest() {
   const [mounted, setMounted] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const timer = setInterval(() => {
+      setAnimationKey(prev => prev + 1);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [mounted]);
 
   const letters = [
     { char: 'W', delay: 0, highlight: false },
@@ -75,7 +86,7 @@ export default function DesignTest() {
           {mounted &&
             letters.map((letter, index) => (
               <span
-                key={index}
+                key={`${index}-${animationKey}`}
                 className={`
                   text-6xl md:text-9xl font-bold tracking-tighter
                   ${letter.highlight
@@ -100,6 +111,7 @@ export default function DesignTest() {
         {/* Subtitle */}
         <div className="mt-12 text-center">
           <p
+            key={`subtitle-${animationKey}`}
             className="text-cyan-400 text-lg md:text-xl font-light tracking-widest opacity-0 animate-fadeIn"
             style={{ animationDelay: '1.2s' }}
           >
